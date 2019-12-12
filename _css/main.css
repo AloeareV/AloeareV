@@ -1,31 +1,29 @@
-body
-{
-	margin: 0;
+#board {
+    background-color: black;
+	width: 600px;
+	height: 400px;
+	position: relative;
 }
-#page
-{
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 1000px;
-	height: 738px;
+
+#snakehead {
+    background-color: lightgreen;
+    width: 20px;
+    height: 20px;
+    position: absolute; 
 }
-#top_bar
-{
-	position: absolute;
-	left: 0;
-	top: 0;
-	width: 1000px;
-	height: 70px;
-	background-color: #369;
-	color: #fff;
+
+#apple {
+    background-color: red;
+    width: 20px;
+    height: 20px;
+    position: absolute;
 }
-#footer_bar
-{
-	position: absolute;
-	left: 0;
-	top: 690px;
-	width: 1000px;
-	height: 48px;
-	background-color: #369;
+
+.snakebody {
+    background-color: green;
+    width: 20px;
+    height: 20px;
+    position: absolute;
 }
+
+
