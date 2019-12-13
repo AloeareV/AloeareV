@@ -10,6 +10,7 @@
     width: 20px;
     height: 20px;
     position: absolute; 
+    z-index: 1;
 }
 
 #apple {
@@ -24,6 +25,8 @@
     width: 20px;
     height: 20px;
     position: absolute;
+    z-index: 1;
+    margin: 0px;
 }
 
 .but_start_game
@@ -41,6 +44,7 @@
     line-height: 60px;
     font-weight: bold;            
     text-shadow: 0px 1px 1px #f99;
+    z-index: 2;
 } 
 .but_start_game:hover
 {
