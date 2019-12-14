@@ -1,6 +1,6 @@
-let tickSpeed = 250;
-let snakeLength = 5;
-let newDirection = "right";
+let tickSpeed;
+let snakeLength;
+let newDirection;
 let cameFrom;
 let head;
 let apple;
@@ -12,34 +12,54 @@ window.addEventListener('load', (event) => {
     document.getElementById("startbutton").setAttribute("onclick", "init();");
 });
 
-function movement() {
-    document.addEventListener('keydown', function (k) {
-        if (k.keyCode === (38 || 87) && cameFrom != "up") {
-            newDirection = "up";
-        }
-        if (k.keyCode === (37 || 65) && cameFrom != "left") {
-            newDirection = "left";
-        }
-        if (k.keyCode === (39 || 68) && cameFrom != "right") {
-            newDirection = "right";
-        }
-        if (k.keyCode === (40 || 83) && cameFrom != "down") {
-            newDirection = "down";
-        }
-    });
-}
-
 function init() {
     document.getElementsByClassName("but_start_game")[0].remove();
     head = document.getElementById("snakehead");
     apple = document.getElementById("apple");
     score = 0;
+    tickSpeed = 250;
+    snakeLength = 5;
+    newDirection = "right";
+    cameFrom = null;
+    snakeBody.forEach(e => e.remove());
+    snakeBody = [];
+    head.style.top = "200px";
+    head.style.left = "200px";
+    apple.style.left = "360px";
+    apple.style.top = "200px";
     movement();
     game = setInterval(action, tickSpeed);
 }
 
+function movement() {
+    document.addEventListener('keydown', function (k) {
+        if ((k.keyCode === 38 || k.keyCode === 87) && cameFrom != "up") {
+            newDirection = "up";
+        }
+        if ((k.keyCode === 37 || k.keyCode === 65) && cameFrom != "left") {
+            newDirection = "left";
+        }
+        if ((k.keyCode === 39 || k.keyCode === 68) && cameFrom != "right") {
+            newDirection = "right";
+        }
+        if ((k.keyCode === 40 || k.keyCode === 83) && cameFrom != "down") {
+            newDirection = "down";
+        }
+    });
+}
+
 function action() {
-    console.log(snakeBody.length, snakeLength);
+    snakeTail();
+    move();
+    collisionDetect();
+    eatApple();
+}
+
+function pos(string) {
+    return Number(string.slice(0, -2));
+}
+
+function snakeTail() {
     snakeBody.unshift(document.createElement("body"));
     snakeBody[0].classList.add("snakebody");
     snakeBody[0].style.left = head.style.left;
@@ -48,6 +68,9 @@ function action() {
     if (snakeBody.length > snakeLength) {
         snakeBody.pop().remove();
     }
+}
+
+function move() {
     switch (newDirection) {
         case "right":
             cameFrom = "left";
@@ -66,6 +89,9 @@ function action() {
             head.style.top = pos(head.style.top) + 20 + "px";
             break;
     }       
+}
+
+function collisionDetect() {
     snakeBody.forEach(function(segment) {
         if (segment.style.left == head.style.left && segment.style.top == head.style.top) {
             gameOver();
@@ -74,6 +100,9 @@ function action() {
     if (head.style.left == "-20px" || head.style.left == "600px" || head.style.top == "-20px" || head.style.top == "400px") {
         gameOver();
     }
+}
+
+function eatApple() {
     if (head.style.left == apple.style.left && head.style.top == apple.style.top) {
         snakeLength += 1;
         score += 1;
@@ -86,22 +115,8 @@ function action() {
     }
 }
 
-function pos(string) {
-    return Number(string.slice(0, -2));
-}
-
 function gameOver() {
     clearInterval(game);
-    snakeBody.forEach(e => e.remove());
-    snakeBody = [];
-    head.style.top = "200px";
-    head.style.left = "200px";
-    apple.style.left = "360px";
-    apple.style.top = "200px";
-    newDirection = "right";
-    snakeLength = 5;
-    cameFrom = undefined;
-    tickSpeed = 250;
     let newButton = document.createElement("startbutton");
     newButton.classList.add("but_start_game");
     let newText = document.createTextNode(score + " points!");
