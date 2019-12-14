@@ -1,10 +1,12 @@
-let tickSpeed = 500;
+let tickSpeed = 250;
 let snakeLength = 5;
 let newDirection = "right";
 let cameFrom;
 let head;
 let apple;
 let snakeBody = [];
+let score;
+let game;
 
 window.addEventListener('load', (event) => {
     document.getElementById("startbutton").setAttribute("onclick", "init();");
@@ -14,31 +16,30 @@ function movement() {
     document.addEventListener('keydown', function (k) {
         if (k.keyCode === (38 || 87) && cameFrom != "up") {
             newDirection = "up";
-            console.log(newDirection + " " + k.keyCode);
         }
         if (k.keyCode === (37 || 65) && cameFrom != "left") {
             newDirection = "left";
-            console.log(newDirection + " " + k.keyCode);
         }
         if (k.keyCode === (39 || 68) && cameFrom != "right") {
             newDirection = "right";
-            console.log(newDirection + " " + k.keyCode);
         }
         if (k.keyCode === (40 || 83) && cameFrom != "down") {
             newDirection = "down";
-            console.log(newDirection + " " + k.keyCode);
         }
     });
 }
 
 function init() {
-    document.getElementById("startbutton").remove();
+    document.getElementsByClassName("but_start_game")[0].remove();
     head = document.getElementById("snakehead");
+    apple = document.getElementById("apple");
+    score = 0;
     movement();
-    setInterval(game, tickSpeed);
+    game = setInterval(action, tickSpeed);
 }
 
-function game() {
+function action() {
+    console.log(snakeBody.length, snakeLength);
     snakeBody.unshift(document.createElement("body"));
     snakeBody[0].classList.add("snakebody");
     snakeBody[0].style.left = head.style.left;
@@ -47,32 +48,77 @@ function game() {
     if (snakeBody.length > snakeLength) {
         snakeBody.pop().remove();
     }
-    //implement creation of snakebody element
-    //implement collision detection with walls, snake, and apple
     switch (newDirection) {
         case "right":
-            console.log("going " + newDirection);
             cameFrom = "left";
             head.style.left = pos(head.style.left) + 20 + "px";
             break;
         case "left":
-            console.log("going " + newDirection);
             cameFrom = "right";
             head.style.left = pos(head.style.left) - 20 + "px";
             break;
         case "up":
-            console.log("going " + newDirection);
             cameFrom = "down";
             head.style.top = pos(head.style.top) - 20 + "px";
             break;
         case "down":
-            console.log("going " + newDirection);
             cameFrom = "up";
             head.style.top = pos(head.style.top) + 20 + "px";
             break;
     }       
+    snakeBody.forEach(function(segment) {
+        if (segment.style.left == head.style.left && segment.style.top == head.style.top) {
+            gameOver();
+        }
+    });
+    if (head.style.left == "-20px" || head.style.left == "600px" || head.style.top == "-20px" || head.style.top == "400px") {
+        gameOver();
+    }
+    if (head.style.left == apple.style.left && head.style.top == apple.style.top) {
+        snakeLength += 1;
+        score += 1;
+        let appleLocation = emptySpace();
+        apple.style.left = appleLocation[0];
+        apple.style.top = appleLocation[1];
+        clearInterval(game);
+        tickSpeed = 250 * 100 / (100 + (score * 5));
+        game = setInterval(action, tickSpeed);
+    }
 }
 
 function pos(string) {
     return Number(string.slice(0, -2));
+}
+
+function gameOver() {
+    clearInterval(game);
+    snakeBody.forEach(e => e.remove());
+    snakeBody = [];
+    head.style.top = "200px";
+    head.style.left = "200px";
+    apple.style.left = "360px";
+    apple.style.top = "200px";
+    newDirection = "right";
+    snakeLength = 5;
+    cameFrom = undefined;
+    tickSpeed = 250;
+    let newButton = document.createElement("startbutton");
+    newButton.classList.add("but_start_game");
+    let newText = document.createTextNode(score + " points!");
+    newButton.appendChild(newText);
+    board.appendChild(newButton);
+    newButton.style.margin = "0px";
+    newButton.setAttribute("onclick", "init();");
+}
+
+function emptySpace() {
+    arr = new Array(600).fill(null).map((e, i) => [i % 30 * 20 + "px", parseInt(i / 30) * 20 + "px"])
+    .filter(e => !snakeBody.some(body => body.style.left == e[0] && body.style.top == e[1]) && !(e[0] == head.style.left && e[1] == head.style.top));
+    return arr[getRandomInt(0, arr.length)];
+}
+
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; 
 }
