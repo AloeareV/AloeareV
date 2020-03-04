@@ -119,7 +119,7 @@ function gameOver() {
     clearInterval(game);
     let newButton = document.createElement("startbutton");
     newButton.classList.add("but_start_game");
-    let newText = document.createTextNode(score + " points!");
+    let newText = document.createTextNode(score + ((score === 1) ? " point!" :" points!"));
     newButton.appendChild(newText);
     board.appendChild(newButton);
     newButton.style.margin = "0px";

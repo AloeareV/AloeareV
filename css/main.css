@@ -3,6 +3,8 @@
 	width: 600px;
 	height: 400px;
 	position: relative;
+    right: calc(-50% + 320px);
+    top: 100px;
     border-style: solid;
     border-width: 20px;
     border-color: grey;
@@ -54,4 +56,3 @@
 {
     background-color: #f33;
 }
-
